@@ -48,17 +48,17 @@ ctx.fillRect(airplane.x, airplane.y, airplane.width, airplane.height);
  obstacles.push({ x , y , width : obstacleWidth, height : obstacleHeight });
  }
 function drawObstacles() {
- ctx.fillStyle = 'yellow';
+ ctx.fillStyle = 'green';
 for (const obstacle of obstacles) {
 ctx.fillRect(obstacle.x , obstacle.y, obstacle.width, obstacle.height);
    }
   }
  function moveObstacles() {
-   for (let i = 0; i < obstacles.length; i++) {
-     obstacles[i].x -= 5;
-if (obstacles[i].y > obstacles[i].height) {
-obstacles.splice(i, 1);}
-i--;
+     for (let i = 0; i < obstacles.length; i++) {
+       obstacles[i].x -= 5;
+     if (obstacles[i].y > obstacles[i].height) {
+     obstacles.splice(i, 1);}
+     i--;
      }
    }
    function gameLoop () {
@@ -74,13 +74,22 @@ i--;
       }
     }
  document.addEventListener('keydown', (e) => {
-       if (e.key === 'ArrowUp' && airplane.y > 0) {
-           airplane.y -= airplane.speed;
-       } else if (e.key === 'ArrowDown' && airplane.y < canvas.height - airplane.height) {
+       if (e.key === 'ArrowLeft' && airplane.x > 0) {
+           airplane.x -= airplane.speed;
+       } else if (e.key === 'ArrowRight' && airplane.x < canvas.width - airplane.width) {
+           airplane.x += airplane.speed;
+
+       }
+       else if (e.key === 'ArrowDown' && airplane.y < canvas.height - airplane.height) {
            airplane.y += airplane.speed;
        }
+       else if (e.key === 'ArrowUp' && airplane.y > 0) {
+           airplane.y -= airplane.speed;
+       }
+
  });
    gameLoop();
  </script>
 </body>
 </html>
+
