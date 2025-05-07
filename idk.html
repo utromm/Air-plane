@@ -2,94 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: lightblue;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        #gameCanvas {
-            background-color: #87CEEB;
-            border: 2px solid black;
+        canvas {
+            background: yellow;
+            display: block;
+            margin: auto;
+            border: 1px solid black;
         }
     </style>
 </head>
 <body>
- <canvas id="gameCanvas"></canvas>
- <script>
-   const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const airplane = {
-x: 270,
-  y: 500,
-  width: 50 ,
-  height: 50 ,
-  speed : 5
-}
-canvas.width = 600;
-canvas.height = 600;
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-const obstacles =[] ;
-let gameRunning = true ;
- function drawAirplane() {
-ctx.fillStyle = 'black';
-ctx.fillRect(airplane.x, airplane.y, airplane.width, airplane.height);
- }
- function createObstacle() {
- const obstacleWidth = Math.floor(Math.random() * 200) + 50;
- const obstacleHeight = 40 ;
- const x = Math.floor(Math.random() * (canvas.width - obstacleWidth)) ;
- const y = canvas.height ;
- obstacles.push({ x , y , width : obstacleWidth, height : obstacleHeight });
- }
-function drawObstacles() {
- ctx.fillStyle = 'green';
-for (const obstacle of obstacles) {
-ctx.fillRect(obstacle.x , obstacle.y, obstacle.width, obstacle.height);
-   }
-  }
- function moveObstacles() {
-     for (let i = 0; i < obstacles.length; i++) {
-       obstacles[i].x -= 5;
-     if (obstacles[i].y > obstacles[i].height) {
-     obstacles.splice(i, 1);}
-     i--;
-     }
-   }
-   function gameLoop () {
-       ctx.clearRect(0, 0, canvas.width, canvas.height);
-       if (gameRunning) {
-           drawAirplane();
-           drawObstacles();
-           moveObstacles();
-           if (Math.random() < 0.02) {
-               createObstacle();
-           }
-           requestAnimationFrame(gameLoop);
-      }
+    let plane = { x: 175, y: 500, width: 50, height: 50 };
+    let obstacles = [];
+    let gameOver = false;
+
+    function drawPlane() {
+        ctx.fillStyle = "black";
+        ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
     }
- document.addEventListener('keydown', (e) => {
-       if (e.key === 'ArrowLeft' && airplane.x > 0) {
-           airplane.x -= airplane.speed;
-       } else if (e.key === 'ArrowRight' && airplane.x < canvas.width - airplane.width) {
-           airplane.x += airplane.speed;
 
-       }
-       else if (e.key === 'ArrowDown' && airplane.y < canvas.height - airplane.height) {
-           airplane.y += airplane.speed;
-       }
-       else if (e.key === 'ArrowUp' && airplane.y > 0) {
-           airplane.y -= airplane.speed;
-       }
+    function drawObstacles() {
+        ctx.fillStyle = "blue";
+        obstacles.forEach(obstacle => {
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        });
+    }
 
- });
-   gameLoop();
- </script>
+    function updateObstacles() {
+        obstacles.forEach(obstacle => {
+            obstacle.y += 5;
+        });
+
+        if (Math.random() < 0.02) {
+            obstacles.push({ x: Math.random() * (canvas.width - 50), y: 0, width: 50, height: 50 });
+        }
+
+        obstacles = obstacles.filter(obstacle => obstacle.y < canvas.height);
+    }
+
+    function checkCollision() {
+        obstacles.forEach(obstacle => {
+            if (
+                plane.x < obstacle.x + obstacle.width &&
+                plane.x + plane.width > obstacle.x &&
+                plane.y < obstacle.y + obstacle.height &&
+                plane.y + plane.height > obstacle.y
+            ) {
+                gameOver = true;
+            }
+        });
+    }
+
+    function gameLoop() {
+        if (gameOver) {
+
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlane();
+        drawObstacles();
+        updateObstacles();
+        checkCollision();
+        requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft" && plane.x > 0) plane.x -= 20;
+        if (event.key === "ArrowRight" && plane.x < canvas.width - plane.width) plane.x += 20;
+    });
+
+    gameLoop();
+</script>
 </body>
 </html>
-
