@@ -18,17 +18,18 @@
 <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-
     let plane = { x: 175, y: 500, width: 50, height: 50 };
     let obstacles = [];
     let score = 0;
+
     function drawPlane() {
         ctx.fillStyle = "black";
         ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
+
     }
 
     function drawObstacles() {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "#000";
         obstacles.forEach(obstacle => {
             ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         });
@@ -36,15 +37,14 @@
 
     function updateObstacles() {
         obstacles.forEach(obstacle => {
-            obstacle.y += 5;
+            obstacle.y += 7;
         });
 
-        if  (Math.random() < 0.01) {
-            obstacles.push({ x: Math.random() * (canvas.width - 50), y: 0, width: 50, height: 50 });
+        if  (Math.random() < 0.03) {
+            obstacles.push({ x: Math.random() * (canvas.width - 50 ), y:0, width: 25, height: 50})
         }
-
-
     }
+
     function checkCollision() {
         for (let i = 0; i < obstacles.length; i++) {
             const obstacle = obstacles[i];
@@ -52,20 +52,18 @@
                 plane.x + plane.width > obstacle.x &&
                 plane.y < obstacle.y + obstacle.height &&
                 plane.y + plane.height > obstacle.y) {
-
                 obstacles.splice(i, 1);
                 i--;
                 score += 1;
-
             }
         }
     }
+
     function drawScore() {
         ctx.fillStyle = "#000";
         ctx.font = "20px Arial";
         ctx.fillText("Score: " + score, 150, 30);
     }
-
 
     function gameStart() {
 
