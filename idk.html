@@ -5,27 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <style>
+        body {
+            margin: 8;
+        }
+        div {
+            display: inline-block;
+            justify-content: center;
+        }
         canvas {
-
-            display: block;
-            margin: auto;
+            display: inline-block;
+            margin-right: auto;
             border: 1px solid black;
         }
     </style>
 </head>
 <body>
 <canvas id="gameCanvas" width="400" height="600"></canvas>
+<canvas id="gameCanvas2" width="400" height="600"></canvas>
 <script>
     const canvas = document.getElementById("gameCanvas");
+    const canvas2 = document.getElementById("gameCanvas2")
     const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+
     let plane = { x: 175, y: 500, width: 50, height: 50 };
+    let plane2 = { x: 175, y: 500, width: 50, height: 50 };
     let obstacles = [];
+    let obstacles2 = [];
     let score = 0;
+    let score2 = 0;
 
     function drawPlane() {
         ctx.fillStyle = "black";
         ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
 
+    }
+    function drawPlane2() {
+        ctx2.fillStyle = "black";
+        ctx2.fillRect(plane2.x, plane2.y, plane2.width, plane2.height);
     }
 
     function drawObstacles() {
@@ -34,14 +51,30 @@
             ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         });
     }
+    function drawObstacles2() {
+        ctx2.fillStyle = "#000";
+        obstacles2.forEach(obstacle2 => {
+            ctx2.fillRect(obstacle2.x , obstacle2.y, obstacle2.width, obstacle2.height);
+        });
+    }
 
     function updateObstacles() {
         obstacles.forEach(obstacle => {
-            obstacle.y += 7;
+            obstacle.y += 5;
         });
 
-        if  (Math.random() < 0.03) {
+        if  (Math.random() < 0.01) {
             obstacles.push({ x: Math.random() * (canvas.width - 50 ), y:0, width: 25, height: 50})
+        }
+    }
+
+    function updateObstacles2() {
+        obstacles2.forEach(obstacle2 => {
+            obstacle2.y += 5;
+        });
+
+        if  (Math.random() < 0.01) {
+            obstacles2.push({ x: Math.random() * (canvas.width - 50 ), y:0, width: 25, height: 50})
         }
     }
 
@@ -59,10 +92,29 @@
         }
     }
 
+    function checkCollision2() {
+        for (let i = 0; i < obstacles2.length; i++) {
+            const obstacle2 = obstacles2[i];
+            if (plane2.x < obstacle2.x + obstacle2.width &&
+                plane2.x + plane2.width > obstacle2.x &&
+                plane2.y < obstacle2.y + obstacle2.height &&
+                plane2.y + plane2.height > obstacle2.y) {
+                obstacles2.splice(i, 1);
+                i--;
+              score2 += 1;
+            }
+        }
+    }
+
     function drawScore() {
         ctx.fillStyle = "#000";
         ctx.font = "20px Arial";
-        ctx.fillText("Score: " + score, 150, 30);
+        ctx.fillText("Score: " + score, 10, 30);
+    }
+    function drawScore2() {
+        ctx2.fillStyle = "#000";
+        ctx2.font = "20px Arial";
+        ctx2.fillText("Score: " + score2, 10 , 30);
     }
 
     function gameStart() {
@@ -74,14 +126,32 @@
         updateObstacles();
         checkCollision();
         requestAnimationFrame(gameStart);
+
+
     }
 
+
     document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowLeft" && plane.x > 0) plane.x -= 10;
-        if (event.key === "ArrowRight" && plane.x < canvas.width - plane.width) plane.x += 10;
+        if (event.key === "a" && plane.x > 0) plane.x -= 10;
+        if (event.key === "d" && plane.x < canvas.width - plane.width) plane.x += 10;
     });
 
+    function gameStart2 () {
+
+        ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+        drawPlane2();
+        drawObstacles2();
+        drawScore2();
+        updateObstacles2();
+        checkCollision2();
+        requestAnimationFrame(gameStart2);
+    }
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft" && plane2.x > 0) plane2.x -= 10;
+        if (event.key === "ArrowRight" && plane2.x < canvas2.width - plane2.width) plane2.x += 10;
+    })
     gameStart();
+    gameStart2();
 </script>
 </body>
 </html>
