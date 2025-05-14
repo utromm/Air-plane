@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <style>
-        body {
-            margin: 8;
-        }
         div {
             display: inline-block;
             justify-content: center;
@@ -34,9 +31,10 @@
     let obstacles2 = [];
     let score = 0;
     let score2 = 0;
+    console.log(obstacles);
 
     function drawPlane() {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "green";
         ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
 
     }
@@ -126,11 +124,7 @@
         updateObstacles();
         checkCollision();
         requestAnimationFrame(gameStart);
-
-
     }
-
-
     document.addEventListener("keydown", (event) => {
         if (event.key === "a" && plane.x > 0) plane.x -= 10;
         if (event.key === "d" && plane.x < canvas.width - plane.width) plane.x += 10;
